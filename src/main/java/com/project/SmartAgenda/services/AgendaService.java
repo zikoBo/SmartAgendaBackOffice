@@ -25,7 +25,7 @@ public class AgendaService {
 	@Autowired
 	EventRepositorie eventRepositorie;
 	
-	@RequestMapping(value="/smartAgenda/addEvent",method=RequestMethod.POST,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/smartAgenda/addEvent",method=RequestMethod.POST,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
 	public ResponseEntity<?> addEvent(@RequestBody Event event)
 	{
 		//TODO s'assurer de cette instruction
@@ -36,9 +36,10 @@ public class AgendaService {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@RequestMapping(value="/smartAgenda/searchForAnEvent",method=RequestMethod.GET,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> searchForAnEvent(@RequestParam String eventName)
+	@RequestMapping(value="/smartAgenda/searchForAnEvent",method=RequestMethod.GET,consumes=org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE,produces="application/json")
+	public ResponseEntity<?> searchForAnEvent(@RequestParam(name="eventName") String eventName)
 	{
+		
 		Set<Event> eventsFound=eventRepositorie.searchForAnEvent(eventName, Agenda.getInstance());
 		if(eventsFound.size()!=0 && eventsFound!=null)
 			return new ResponseEntity<Set<Event>>(eventsFound,HttpStatus.FOUND);
@@ -47,13 +48,13 @@ public class AgendaService {
 	
 	//TODO ws d'ordannacement
 	
-	@RequestMapping(value="/smartAgenda/updateAnEvent",method=RequestMethod.PUT,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/smartAgenda/updateAnEvent",method=RequestMethod.PUT,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
 	public ResponseEntity<?> updateAnEvent(@RequestBody Event event)
 	{
 		try{
 			event.setAgenda(Agenda.getInstance());
-			eventRepositorie.saveAndFlush(event);
-			return new ResponseEntity<>(HttpStatus.OK);
+			event=eventRepositorie.saveAndFlush(event);
+			return new ResponseEntity<Event>(event,HttpStatus.OK);
 		}catch(Exception e)
 		{
 			e.printStackTrace();

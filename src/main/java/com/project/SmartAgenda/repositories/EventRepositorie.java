@@ -13,4 +13,5 @@ public interface EventRepositorie extends JpaRepository<Event, Integer> {
 
 	@Query("FROM Event e WHERE e.name LIKE %:nameEvent% AND e.agenda=:agenda")
 	public Set<Event> searchForAnEvent(@Param("nameEvent") String nameEvent,@Param("agenda") Agenda agenda);
+	public Event findByIdEvent(int idEvent);
 }

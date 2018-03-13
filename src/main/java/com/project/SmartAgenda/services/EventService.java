@@ -31,14 +31,14 @@ public class EventService {
 	
 	//TODO ajouter un attribut date à la classe notification et ajouter le comme params de la fonctionne
 	
-	@RequestMapping(value="/smartAgenda/updateEvent",method=RequestMethod.POST,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> addNotificationToEvent(@RequestParam Date dateOfNotification,@RequestParam int idevent)
+	@RequestMapping(value="/smartAgenda/addNotificationToEvent",method=RequestMethod.POST,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
+	public ResponseEntity<?> addNotificationToEvent(@RequestParam("dateOfNotification") Date dateOfNotification,@RequestParam("idEvent") int idEvent)
 	{
 		try{
-		Notification notificationToAdd=new Notification(eventRepositorie.findById(idevent).get().getName(), true, dateOfNotification);
-		notificationToAdd.setEvent(eventRepositorie.findById(idevent).get());
+		Notification notificationToAdd=new Notification(eventRepositorie.findByIdEvent(idEvent).getName(), true, dateOfNotification);
+		notificationToAdd.setEvent(eventRepositorie.findByIdEvent(idEvent));
 		notificationRepositorie.save(notificationToAdd);
-		Event eventToUpdate=eventRepositorie.findById(idevent).get();
+		Event eventToUpdate=eventRepositorie.findByIdEvent(idEvent);
 		Set<Notification> notifications=eventToUpdate.getNotifications();
 		notifications.add(notificationToAdd);
 		eventToUpdate.setNotifications(notifications);
@@ -53,19 +53,20 @@ public class EventService {
 	}
 	
 	@RequestMapping(value="/smartAgenda/removeNotification",method=RequestMethod.DELETE,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> removeNotificationFromEvent(@RequestParam Date dateOfNotification)
+	public ResponseEntity<?> removeNotificationFromEvent(@RequestParam("dateOfNotification") Date dateOfNotification)
 	{
 		Set<Notification> notifications=notificationRepositorie.findByDateOfNotification(dateOfNotification);
 		for(Notification notification:notifications)
 			notificationRepositorie.delete(notification);
+		System.out.println("***********************************************************************************************");
 		return new ResponseEntity<>(HttpStatus.OK);
 		
 	}
 	
 	@RequestMapping(value="/smartAgenda/getEstimatedTime",method=RequestMethod.GET,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getEstimatedTime(@RequestParam int idEvent)
+	public ResponseEntity<?> getEstimatedTime(@RequestParam("idEvent") int idEvent)
 	{
-		Event eventToCompute=eventRepositorie.findById(idEvent).get();
+		Event eventToCompute=eventRepositorie.findByIdEvent(idEvent);
 		long dateStart=eventToCompute.getDateStart().getTime();
 		long dateEnd=eventToCompute.getDateEnd().getTime();
 		long estimatedTime=dateEnd-dateStart;
@@ -91,16 +92,16 @@ public class EventService {
 	//TODO gestBestDepartueTime
 	
 	@RequestMapping(value="/smartAgenda/displayEvent",method=RequestMethod.GET,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> displayEvent(@RequestParam int idEvent)
+	public ResponseEntity<?> displayEvent(@RequestParam("idEvent") int idEvent)
 	{
-		Event eventToDisplay=eventRepositorie.findById(idEvent).get();
+		Event eventToDisplay=eventRepositorie.findByIdEvent(idEvent);
 		if(eventToDisplay==null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		return new ResponseEntity<Event>(eventToDisplay,HttpStatus.FOUND);
 	}
 	
-	@RequestMapping(value="/smartAgenda/updateevent",method=RequestMethod.PUT,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> displayEvent(@RequestBody Event event)
+	@RequestMapping(value="/smartAgenda/updatEvent",method=RequestMethod.PUT,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> updateEvent(@RequestBody Event event)
 	{
 		eventRepositorie.saveAndFlush(event);
 		return new ResponseEntity<Event>(event,HttpStatus.OK);

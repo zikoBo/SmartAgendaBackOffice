@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Agenda implements Serializable {
 
@@ -23,8 +25,10 @@ public class Agenda implements Serializable {
 	private int idAgenda;
 	private String nameAgenda;
 	private static Agenda agenda=new Agenda();
+	@JsonIgnore
 	@OneToOne
 	private User user;
+	@JsonIgnore
 	@OneToMany(mappedBy="agenda",cascade=CascadeType.REMOVE)
 	private Set<Event> events;
 	

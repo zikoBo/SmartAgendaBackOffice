@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Event implements Serializable {
 
@@ -38,8 +40,10 @@ public class Event implements Serializable {
 	private Transport transport;
 	@Enumerated(EnumType.STRING)
 	private Weather weather;
+	@JsonIgnore
 	@OneToMany(mappedBy="event")
 	private Set<Notification> notifications;
+	@JsonIgnore
 	@ManyToOne
 	private Agenda agenda;
 	
