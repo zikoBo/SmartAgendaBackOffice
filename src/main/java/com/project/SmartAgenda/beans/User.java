@@ -8,11 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class User implements Serializable {
+public class User implements Serializable   {
 
-	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idUser;
@@ -21,6 +23,7 @@ public class User implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String email;
+	@JsonIgnore
 	@OneToOne(mappedBy="user",cascade=CascadeType.REMOVE)
 	private Agenda agenda;
 	
@@ -45,6 +48,17 @@ public class User implements Serializable {
 		this.lastName = lastName;
 		this.email = email;
 		this.agenda = agenda;
+	}
+	
+	
+	public User(int idUser, String login, String password, String firstName, String lastName, String email) {
+		super();
+		this.idUser = idUser;
+		this.login = login;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.email = email;
 	}
 	public int getIdUser() {
 		return idUser;
@@ -145,8 +159,10 @@ public class User implements Serializable {
 		return true;
 	}
 	
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
+	
+	@Override
+	public String toString() {
+		return "User [idUser=" + idUser + ", login=" + login + ", password=" + password + ", firstName=" + firstName
+				+ ", lastName=" + lastName + ", email=" + email + ", agenda=" + agenda + "]";
+	}	
 }

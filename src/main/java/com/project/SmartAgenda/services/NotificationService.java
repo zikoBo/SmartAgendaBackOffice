@@ -24,8 +24,8 @@ public class NotificationService {
 	@Autowired
 	EventRepositorie eventRepositorie;
 	
-	@RequestMapping(value="/smartAgenda/setNotificationState",method=RequestMethod.PUT,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> setNotificationState(@RequestParam int idNotification)
+	@RequestMapping(value="/smartAgenda/setNotificationState",method=RequestMethod.PUT,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
+	public ResponseEntity<?> setNotificationState(@RequestParam("idNotification") int idNotification)
 	{
 		//Notification notificationToSet=notificationRepositorie.findByEvent(eventRepositorie.getOne(event.getIdEvent()));
 		Notification notificationToSet=notificationRepositorie.getOne(idNotification);
@@ -34,7 +34,7 @@ public class NotificationService {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value="/smartAgenda/updateNotification",method=RequestMethod.PUT,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/smartAgenda/updateNotification",method=RequestMethod.PUT,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
 	public ResponseEntity<?> updateNotification(@RequestBody Notification notification)
 	{
 		
