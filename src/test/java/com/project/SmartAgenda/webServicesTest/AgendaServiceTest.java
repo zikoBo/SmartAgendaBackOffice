@@ -39,9 +39,11 @@ import com.project.SmartAgenda.repositories.AgendaRepositorie;
 import com.project.SmartAgenda.repositories.EventRepositorie;
 import com.project.SmartAgenda.services.AgendaService;
 import com.project.SmartAgenda.services.EventService;
+import com.project.SmartAgenda.services.NotificationService;
 
 
 @RunWith(SpringRunner.class)
+//@WebMvcTest(value=UserServiceTest.class,secure=false)
 @AutoConfigureMockMvc(secure=false)
 @SpringBootTest(classes=AgendaService.class)
 @ContextConfiguration(classes=SmartAgendaApplication.class)
@@ -53,8 +55,8 @@ public class AgendaServiceTest {
 	JacksonTester<Event> jsonWriter;
 	@Autowired
 	ObjectMapper objectMapper;
-	@MockBean
-	AgendaService agendaService;
+//	@MockBean
+//	AgendaService agendaService;
 	@MockBean
 	EventRepositorie eventRepositorie;
 	@MockBean
@@ -64,11 +66,11 @@ public class AgendaServiceTest {
 	Set<Event> events;
 	@Before
 	public void setUp() throws Exception {
-		event=new Event("event1", new Date(), new Date(), "adresse1");
-		event.setIdEvent(2);
-		event.setAgenda(Agenda.getInstance());
-		 events=new HashSet<>();
-		events.add(event);
+		this.event=new Event("event1", null, null, "adresse1");
+		this.event.setIdEvent(2);
+		this.event.setAgenda(Agenda.getInstance());
+		this. events=new HashSet<>();
+		this.events.add(event);
 	}
 
 	@After
@@ -78,7 +80,7 @@ public class AgendaServiceTest {
 	@Test
 	public void testAddEvent() throws Exception {
 		//Mockito.when(agendaService.addEvent(Mockito.any())).thenCallRealMethod();
-		Mockito.when(eventRepositorie.save(Mockito.any())).thenReturn(event);
+		Mockito.when(eventRepositorie.save(Mockito.any())).thenReturn(this.event);
 		Mockito.when(agendaRepositorie.saveAndFlush(Mockito.any())).thenReturn(Agenda.getInstance());
 		String eventJson=jsonWriter.write(event).getJson();
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.post("/smartAgenda/addEvent").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(eventJson);
@@ -100,7 +102,7 @@ public class AgendaServiceTest {
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.get("/smartAgenda/searchForAnEvent").param("eventName", "jjj").accept(MediaType.APPLICATION_JSON_UTF8_VALUE).contentType("application/json");
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
 		System.out.println("resulat : "+result.getResponse().getContentAsString());
-		String expected=("{idUser:1,login:login1,password:password1,firstName:firstName1,lastName:lastName1,email:email1}");
+		String expected="[{idEvent:2,name:event1,dateStart:null,dateEnd:null,adresse:adresse1}]";
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 
 	}
@@ -110,11 +112,13 @@ public class AgendaServiceTest {
 	public void testUpdateAnEvent() throws Exception {
 		Mockito.when(agendaRepositorie.saveAndFlush(Mockito.any())).thenReturn(event);
 		String eventJson=jsonWriter.write(event).getJson();
-		RequestBuilder requestBuilder=MockMvcRequestBuilders.put("/smartAgenda/updateAnEvent").accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON).content(eventJson);
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.put("/smartAgenda/updateAnEvent").accept(MediaType.APPLICATION_JSON_VALUE).contentType("application/json").contentType(MediaType.APPLICATION_JSON).content(eventJson);
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
 		String expected="{idEvent:2,name:event1,dateStart:12-03-2018,dateEnd:12-03-2018,adresse:adresse1}";
+		System.out.println("resulatat : "+result.getResponse().getContentAsString());
 		//assertEquals(HttpStatus.ACCEPTED.value(), result.getResponse().getStatus());
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+		
 	}
 
 }

@@ -2,6 +2,7 @@ package com.project.SmartAgenda.beans;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -34,15 +35,18 @@ public class Event implements Serializable {
 	@Temporal(TemporalType.DATE)
 	private Date dateEnd;
 	private String adresse;
+	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	private Tag tag;
+	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	private Transport transport;
+	@JsonIgnore
 	@Enumerated(EnumType.STRING)
 	private Weather weather;
 	@JsonIgnore
 	@OneToMany(mappedBy="event")
-	private Set<Notification> notifications;
+	private Set<Notification> notifications=new HashSet<>();
 	@JsonIgnore
 	@ManyToOne
 	private Agenda agenda;

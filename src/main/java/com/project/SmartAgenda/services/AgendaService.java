@@ -28,9 +28,8 @@ public class AgendaService {
 	@RequestMapping(value="/smartAgenda/addEvent",method=RequestMethod.POST,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
 	public ResponseEntity<?> addEvent(@RequestBody Event event)
 	{
-		//TODO s'assurer de cette instruction
 		event.setAgenda(Agenda.getInstance());
-		eventRepositorie.save(event);
+		event=eventRepositorie.save(event);			
 		Agenda.getInstance().getEvents().add(event);
 		agendaRepositorie.saveAndFlush(Agenda.getInstance());
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -46,7 +45,6 @@ public class AgendaService {
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 	
-	//TODO ws d'ordannacement
 	
 	@RequestMapping(value="/smartAgenda/updateAnEvent",method=RequestMethod.PUT,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
 	public ResponseEntity<?> updateAnEvent(@RequestBody Event event)
