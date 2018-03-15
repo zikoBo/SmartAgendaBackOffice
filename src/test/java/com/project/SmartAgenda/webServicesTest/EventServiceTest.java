@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -54,14 +55,14 @@ public class EventServiceTest {
 	EventRepositorie eventRepositorie;
 	@MockBean 
 	NotificationRepositorie notificationRepositorie;
-	@MockBean
-	EventService eventService;
+//	@MockBean
+//	EventService eventService;
 	Event event;
 	Notification notification;
 	Set<Notification> notifications=new HashSet<>();
 	@Before
 	public void setUp() throws Exception {
-		this.event=new Event("event3Ajoute", new Date(), new Date(), "adresse3");
+		this.event=new Event("event3Ajoute", null, null, "adresse3");
 		this.event.setIdEvent(3);
 		this.notification=new Notification("notif1", true, new Date());
 		this.notification.setIdNotification(3);
@@ -99,12 +100,12 @@ public class EventServiceTest {
 	
 	@Test
 	public void testGetEstimatedTime() throws Exception {
-		Mockito.when(eventRepositorie.findByIdEvent(Mockito.anyInt())).thenReturn(this.event);
+		Mockito.when(eventRepositorie.findByIdEvent(Mockito.anyInt())).thenReturn(new Event("eventTestTime", new Date(15000), new Date(25555515), "ad"));
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.get("/smartAgenda/getEstimatedTime").param("idEvent", "1").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
 		System.out.println("resulat : "+result.getResponse().getContentAsString());
-		String expected=("{idUser:1,login:login1,password:password1,firstName:firstName1,lastName:lastName1,email:email1}");
-		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+		String expected=("0 J 7 H 5 M 40 S");
+		assertEquals(expected, result.getResponse().getContentAsString());
 		assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
 		
 	}
@@ -115,7 +116,7 @@ public class EventServiceTest {
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.get("/smartAgenda/displayEvent").param("idEvent", "1").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
 		System.out.println("resulat : "+result.getResponse().getContentAsString());
-		String expected=("{idUser:1,login:login1,password:password1,firstName:firstName1,lastName:lastName1,email:email1}");
+		String expected="{idEvent:3,name:event3Ajoute,dateStart:null,dateEnd:null,adresse:adresse3}";
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 		assertEquals(HttpStatus.FOUND.value(), result.getResponse().getStatus());
 	}
@@ -127,8 +128,9 @@ public class EventServiceTest {
 		Mockito.when(eventRepositorie.saveAndFlush(Mockito.any(Event.class))).thenReturn(this.event);
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
 		System.out.println("resulat : "+result.getResponse().getContentAsString());
-		String expected=("{idUser:1,login:login1,password:password1,firstName:firstName1,lastName:lastName1,email:email1}");
-		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+		String expected="{idEvent:3,name:event3Ajoute,dateStart:null,dateEnd:null,adresse:adresse3}";
+		String response=new String(result.getResponse().getContentAsString());
+		JSONAssert.assertEquals(expected, response, false);
 		assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
 	}
 

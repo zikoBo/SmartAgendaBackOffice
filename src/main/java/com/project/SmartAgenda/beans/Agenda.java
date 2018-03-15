@@ -1,6 +1,7 @@
 package com.project.SmartAgenda.beans;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -30,7 +31,7 @@ public class Agenda implements Serializable {
 	private User user;
 	@JsonIgnore
 	@OneToMany(mappedBy="agenda",cascade=CascadeType.REMOVE)
-	private Set<Event> events;
+	private Set<Event> events=new HashSet<>();
 	
 	
 	public static Agenda getInstance()

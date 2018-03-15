@@ -29,7 +29,6 @@ public class EventService {
 	@Autowired
 	NotificationRepositorie notificationRepositorie;
 	
-	//TODO ajouter un attribut date à la classe notification et ajouter le comme params de la fonctionne
 	
 	@RequestMapping(value="/smartAgenda/addNotificationToEvent",method=RequestMethod.POST,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
 	public ResponseEntity<?> addNotificationToEvent(@RequestParam("dateOfNotification") Date dateOfNotification,@RequestParam("idEvent") int idEvent)
@@ -85,11 +84,10 @@ public class EventService {
 		long diffMinutes=estimatedTime/minuteInMilis;
 		estimatedTime=estimatedTime%minuteInMilis;
 		long diffSeconds=estimatedTime/secondInMilis;
-		String estimatedDuration=diffDays+" J "+diffHours+" H "+diffMinutes+" M "+diffSeconds+" S ";
+		String estimatedDuration=diffDays+" J "+diffHours+" H "+diffMinutes+" M "+diffSeconds+" S";
 		return new ResponseEntity<String>(estimatedDuration,HttpStatus.OK);
 	}
 	
-	//TODO gestBestDepartueTime
 	
 	@RequestMapping(value="/smartAgenda/displayEvent",method=RequestMethod.GET,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> displayEvent(@RequestParam("idEvent") int idEvent)
@@ -107,6 +105,5 @@ public class EventService {
 		return new ResponseEntity<Event>(event,HttpStatus.OK);
 	}
 	
-	//TODO getForecast
 }
 
