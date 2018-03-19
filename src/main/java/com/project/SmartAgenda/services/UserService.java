@@ -33,8 +33,8 @@ public class UserService {
 		 User userFound=userRepositorie.authentication(login, password);
 		
 		if(userFound!=null)
-			return new ResponseEntity<User>(userFound,HttpStatus.FOUND);
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<User>(userFound,HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
 	@RequestMapping(value="/smartAgenda/deleteAccount",method=RequestMethod.DELETE)
