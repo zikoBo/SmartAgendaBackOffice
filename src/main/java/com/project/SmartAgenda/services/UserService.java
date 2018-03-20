@@ -1,6 +1,8 @@
 package com.project.SmartAgenda.services;
 
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,6 +37,20 @@ public class UserService {
 		if(userFound!=null)
 			return new ResponseEntity<User>(userFound,HttpStatus.OK);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	@RequestMapping(value="/smartAgenda/addUser",method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_UTF8_VALUE,produces="application/json")
+	public ResponseEntity<?> addUser(@RequestBody User userToAdd)
+	{
+		try{
+		User userAdded=userRepositorie.save(userToAdd);
+		return new ResponseEntity<User>(userAdded,HttpStatus.CREATED);
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.METHOD_FAILURE);
+
+		}
 	}
 	
 	@RequestMapping(value="/smartAgenda/deleteAccount",method=RequestMethod.DELETE)

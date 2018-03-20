@@ -2,6 +2,10 @@ package com.project.SmartAgenda.webServicesTest;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
+import javax.jws.soap.SOAPBinding.Use;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -59,7 +63,7 @@ public class UserServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.userfound=new User(1,"login1", "password1", "firstName1", "lastName1", "email1");
+		this.userfound=new User(5,"login1", "password1", "firstName1", "lastName1", "email1");
 		this.agenda.setUser(new User(2, "za", "za", "za", "za", "za"));
 	}
 
@@ -121,6 +125,20 @@ public class UserServiceTest {
 		RequestBuilder requestBuilder=MockMvcRequestBuilders.put("/smartAgenda/resetPassword").param("idUser", "1").param("new Password", "nouveau").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON);
 		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
 		assertEquals(result.getResponse().getStatus(), HttpStatus.OK.value());
+	}
+	
+	@Test
+	public void testAddUser() throws Exception{
+		String userJson=jsonWriter.write(userfound).getJson();
+		String expected=("{idUser:1,login:login1,password:password1,firstName:firstName1,lastName:lastName1,email:email1}");
+		Mockito.when(userRepositorie.save(Mockito.any(User.class))).thenReturn(userfound);
+		RequestBuilder requestBuilder=MockMvcRequestBuilders.post("/smartAgenda/addUser").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(userJson);
+		MvcResult result=mockMvc.perform(requestBuilder).andReturn();
+		assertEquals(result.getResponse().getStatus(), HttpStatus.CREATED.value());
+		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+
+		
+		
 	}
 
 }
