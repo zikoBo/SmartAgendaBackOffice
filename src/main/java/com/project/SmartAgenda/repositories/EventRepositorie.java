@@ -1,5 +1,7 @@
 package com.project.SmartAgenda.repositories;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +16,5 @@ public interface EventRepositorie extends JpaRepository<Event, Integer> {
 	@Query("FROM Event e WHERE e.name LIKE %:nameEvent% AND e.agenda=:agenda")
 	public Set<Event> searchForAnEvent(@Param("nameEvent") String nameEvent,@Param("agenda") Agenda agenda);
 	public Event findByIdEvent(int idEvent);
+	public List<Event> findByDateStart(Date dateStart);
 }
