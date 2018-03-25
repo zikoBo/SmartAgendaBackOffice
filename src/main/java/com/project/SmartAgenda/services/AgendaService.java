@@ -2,6 +2,7 @@ package com.project.SmartAgenda.services;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -80,5 +81,17 @@ public class AgendaService {
 		return new ResponseEntity<List<Event>>(eventsSorted,HttpStatus.ACCEPTED);
 	}
 	
+	@RequestMapping(value="/smartAgenda/ordonanceEventsForDay",method=RequestMethod.GET,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
+	public ResponseEntity<?> ordanaceEventsForDay(@RequestParam("date") Date date)
+	{
+		List<Event> eventsSorted=eventRepositorie.findByDateStart(date);
+		Collections.sort(eventsSorted, new Comparator<Event>() {
 
+			@Override
+			public int compare(Event o1, Event o2) {
+				return o1.getDateStart().compareTo(o2.getDateStart());
+			}	
+		});
+		return new ResponseEntity<List<Event>>(eventsSorted,HttpStatus.ACCEPTED);
+	}
 }
