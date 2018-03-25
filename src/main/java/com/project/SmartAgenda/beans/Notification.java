@@ -70,6 +70,12 @@ public class Notification implements Serializable {
 	public void setEvent(Event event) {
 		this.event = event;
 	}
+	public Date getDateOfNotification() {
+		return dateOfNotification;
+	}
+	public void setDateOfNotification(Date dateOfNotification) {
+		this.dateOfNotification = dateOfNotification;
+	}
 	
 	
 

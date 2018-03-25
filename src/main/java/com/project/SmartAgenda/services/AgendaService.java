@@ -1,5 +1,8 @@
 package com.project.SmartAgenda.services;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.SmartAgenda.SmartAgendaApplication;
 import com.project.SmartAgenda.beans.Agenda;
 import com.project.SmartAgenda.beans.Event;
 import com.project.SmartAgenda.repositories.AgendaRepositorie;
@@ -29,10 +33,11 @@ public class AgendaService {
 	public ResponseEntity<?> addEvent(@RequestBody Event event)
 	{
 		event.setAgenda(Agenda.getInstance());
+		agendaRepositorie.save(Agenda.getInstance());
 		event=eventRepositorie.save(event);			
 		Agenda.getInstance().getEvents().add(event);
 		agendaRepositorie.saveAndFlush(Agenda.getInstance());
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@RequestMapping(value="/smartAgenda/searchForAnEvent",method=RequestMethod.GET,consumes=org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE,produces="application/json")
@@ -59,6 +64,20 @@ public class AgendaService {
 			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 		}
 		
+	}
+	
+	@RequestMapping(value="/smartAgenda/ordonanceEvents",method=RequestMethod.GET,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
+	public ResponseEntity<?> ordanaceEvents()
+	{
+		List<Event> eventsSorted=eventRepositorie.findAll();
+		Collections.sort(eventsSorted, new Comparator<Event>() {
+
+			@Override
+			public int compare(Event o1, Event o2) {
+				return o1.getDateStart().compareTo(o2.getDateStart());
+			}	
+		});
+		return new ResponseEntity<List<Event>>(eventsSorted,HttpStatus.ACCEPTED);
 	}
 	
 
