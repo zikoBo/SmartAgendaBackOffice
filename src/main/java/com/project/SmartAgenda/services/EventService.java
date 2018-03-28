@@ -40,7 +40,7 @@ public class EventService {
 	public ResponseEntity<?> addNotificationToEvent(@RequestParam("dateOfNotification") Date dateOfNotification,@RequestParam("idEvent") int idEvent)
 	{
 		try{
-		Notification notificationToAdd=new Notification(eventRepositorie.findByIdEvent(idEvent).getName(), true, dateOfNotification);
+		Notification notificationToAdd=new Notification(eventRepositorie.findByIdEvent(idEvent).getTitle(), true, dateOfNotification);
 		notificationToAdd.setEvent(eventRepositorie.findByIdEvent(idEvent));
 		notificationRepositorie.save(notificationToAdd);
 		Event eventToUpdate=eventRepositorie.findByIdEvent(idEvent);
@@ -73,8 +73,8 @@ public class EventService {
 	public ResponseEntity<?> getEstimatedTime(@RequestParam("idEvent") int idEvent)
 	{
 		Event eventToCompute=eventRepositorie.findByIdEvent(idEvent);
-		long dateStart=eventToCompute.getDateStart().getTime();
-		long dateEnd=eventToCompute.getDateEnd().getTime();
+		long dateStart=eventToCompute.getStartTime().getTime();
+		long dateEnd=eventToCompute.getEndTime().getTime();
 		long estimatedTime=dateEnd-dateStart;
 		
 		/*
