@@ -75,7 +75,7 @@ public class AgendaService {
 
 			@Override
 			public int compare(Event o1, Event o2) {
-				return o1.getDateStart().compareTo(o2.getDateStart());
+				return o1.getStartTime().compareTo(o2.getStartTime());
 			}	
 		});
 		return new ResponseEntity<List<Event>>(eventsSorted,HttpStatus.ACCEPTED);
@@ -84,12 +84,12 @@ public class AgendaService {
 	@RequestMapping(value="/smartAgenda/ordonanceEventsForDay",method=RequestMethod.GET,consumes=org.springframework.http.MediaType.APPLICATION_JSON_VALUE,produces="application/json")
 	public ResponseEntity<?> ordanaceEventsForDay(@RequestParam("date") Date date)
 	{
-		List<Event> eventsSorted=eventRepositorie.findByDateStart(date);
+		List<Event> eventsSorted=eventRepositorie.findByStartTime(date);
 		Collections.sort(eventsSorted, new Comparator<Event>() {
 
 			@Override
 			public int compare(Event o1, Event o2) {
-				return o1.getDateStart().compareTo(o2.getDateStart());
+				return o1.getStartTime().compareTo(o2.getStartTime());
 			}	
 		});
 		return new ResponseEntity<List<Event>>(eventsSorted,HttpStatus.ACCEPTED);
